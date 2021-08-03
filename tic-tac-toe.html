@@ -11,10 +11,30 @@
     </head>
     <body>
         <div id = 'container'>
-            <div id = 'difficulty-lvl'></div>
-            <div class = 'player-choice' id = 'x-choice'>X</div>
-            <div class = 'player-choice' id = 'o-choice'>O</div>
-            <div id = 'grid-container'>
+            <div id = 'choice-container'>
+                <select id = 'diff-lvl'> 
+                    <option>Easy</option>
+                    <option>Medium</option>
+                    <option>Hard</option>
+                    <option>Unbeatable</option>
+                </select>
+                <div id = 'x-o-container'>
+                    <div class = 'choice-bttn' id = "x-bttn">X</div>
+                    <div class = 'choice-bttn' id = 'o-bttn'>O</div>
+                </div>
+            </div>
+            <div id = 'play-container'>
+                <div id = 'grid-container'>
+                    <div class = 'grid-element' id = 'sq1'></div>
+                    <div class = 'grid-element' id = 'sq2'></div>
+                    <div class = 'grid-element' id = 'sq3'></div>
+                    <div class = 'grid-element' id = 'sq4'></div>
+                    <div class = 'grid-element' id = 'sq5'></div>
+                    <div class = 'grid-element' id = 'sq6'></div>
+                    <div class = 'grid-element' id = 'sq7'></div>
+                    <div class = 'grid-element' id = 'sq8'></div>
+                    <div class = 'grid-element' id = 'sq9'></div>
+                </div>
             </div>
             <div id = 'restart'>Restart</div>
         </div>
