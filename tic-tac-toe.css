@@ -23,21 +23,28 @@ body {
 }
 
 .choice-bttn {
-    border: 2px solid black;
     border-radius: 10px;
     padding: 5px 85px;
     cursor: pointer;
+    font-size: inherit;
+    font-weight: inherit;
+    background-color: transparent;
+    color: grey;
+    border: 1px solid lightgrey;
 }
 
 #x-bttn {
     margin-right: 15px;
+}
+
+.selected {
+    border: 2px solid black;
     box-shadow: -1px 7px 22px -6px grey;
+    color: black;
 }
 
 #o-bttn {
     margin-left: 15px;
-    color: grey;
-    border: 1px solid lightgrey;
 }
 
 #restart {
@@ -62,16 +69,17 @@ body {
     justify-content: center;
     align-items: center;
     grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
     color: #12232E;
+    cursor: pointer;
 }
 
 .grid-element {
-    width: 100%;
-    height: 100%;
+    height: 103px;
+    font-size: 70px;
     display: grid;
     justify-content: center;
     align-items: center;
-    font-size: 70px;
 }
 
 #sq1, #sq2, #sq4, #sq5 {
@@ -93,5 +101,24 @@ body {
     border: none;
     border-bottom: 2px solid black;
     outline: none;
+    cursor: pointer;
+}
+
+.insertMove {
+    animation: insertMove 0.35s cubic-bezier(0.550, 0.055, 0.675, 0.190);
+}
+
+@keyframes insertMove {
+    0% {
+        transform: scale(2);
+        filter: blur(4px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        filter: blur(0);
+        opacity: 1;
+    }
 }
 
