@@ -9,7 +9,7 @@ body {
     display:grid;
     grid-template-rows: 1fr 3fr 70px;
     border: 1px solid lightgrey;
-    border-radius: 5px;
+    border-radius: 10px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 900;
 } 

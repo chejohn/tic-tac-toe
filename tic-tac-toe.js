@@ -123,9 +123,8 @@ function game() {
     gridElementChild.textContent = player1Move;
     const gameArrayIndex = Number(this.id.substring(2, 3)) - 1;
     GameBoard.insertMove(player1Move, gameArrayIndex);
-    const gameWonP1 = checkForGameWin(player1Move);
     
-    if (gameWonP1) {
+    if (checkForGameWin(player1Move)) {
         insertGameEndMessage('p1Win');
         return;
     }
