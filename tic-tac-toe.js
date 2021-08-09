@@ -1,43 +1,15 @@
 
-const GameBoard = (() => {
-    const gameArray = [null, null, null, null, null, null, null, null, null];
-    
-    const validIndicies = [0,1,2,3,4,5,6,7,8];
-
-    const getValIndiciesLength = () => {
-        return validIndicies.length;
-    }
-
-    const getValidIndex = (randomIndex) => {
-        return validIndicies[randomIndex];
-    }
-
-    const insertMove = (move, index) => {
-        gameArray[index] = move;
-        const validIndex = validIndicies.indexOf(index);
-        validIndicies.splice(validIndex, 1);
-    }
-
-    const validMove = (index) => {
-        return gameArray[index] === null;
-    }
-
-    const returnPlayerEntry = (index) => {
-        return gameArray[index];
-    }
-
-
-    return {insertMove, validMove, getValIndiciesLength, getValidIndex, returnPlayerEntry};
-})();
-
 const Player = (playerMove) => {
-    const move = playerMove;
+    let move = playerMove;
 
     const returnPlayerMove = () => {
         return move;
     }
 
-    return {returnPlayerMove}
+    const setPlayerMove = (newMove) => {
+        move = newMove;
+    }
+    return {returnPlayerMove, setPlayerMove}
 }
 
 function getPlayer1Move() {
@@ -45,7 +17,6 @@ function getPlayer1Move() {
     buttons[0].classList.forEach((className) => {
         if (className === 'selected') playerMoveX = true;
     });
-    
     if (playerMoveX === true) return 'x';
     else return 'o';
 }
@@ -68,7 +39,9 @@ function playComputerTurn(player2Move) {
     const GUIid = 'sq' + String(gameArrayIndex + 1);
     for (let i = 0; i < gridElements.length; i++) {
         if (gridElements[i].id === GUIid) {
-            gridElements[i].textContent = player2Move;
+            const gridElementChild = gridElements[i].childNodes[1];
+            gridElementChild.classList.add('insertMove');
+            gridElementChild.textContent = player2Move;
             break;
         }
     }
@@ -104,33 +77,103 @@ function checkForGameWin(playerMove) {
     else return false;
 }
 
-function game() {
-    if (this.textContent != '') return;
-    GameState.incrementP1MoveCount();
-    const player1Move = player1.returnPlayerMove();
-    const player2Move = player2.returnPlayerMove();
+function insertGameEndMessage(winStatus) {
+    setTimeout(function() {body.prepend(gameEndMessage);}, 600);
+    const gameMessage = gameEndMessage.childNodes[1].childNodes[1];
+    const gameWinner = gameEndMessage.childNodes[1].childNodes[3];
 
-    this.textContent = player1Move;
+    if (winStatus === 'p1Win') {
+        gameWinner.textContent = GameState.player1.returnPlayerMove();
+    }
+
+    else if (winStatus === 'p2Win') {
+        gameWinner.textContent = GameState.player2.returnPlayerMove();
+    }
+
+    else {
+        gameMessage.textContent = "It's a Draw";
+        gameWinner.textContent = '';
+    }
+}
+
+function restartGame() {
+    GameState.restartGameState();
+    GameBoard.resetGameBoard();
+
+    gridElements.forEach((gridElement) => {
+        gridElement.childNodes[1].textContent = "";
+        gridElement.childNodes[1].className = '';
+    });
+}
+
+function hidePopUp() {
+    gameEndMessage.remove();
+    restartGame();
+}
+
+function game() {
+    const gridElementChild = this.childNodes[1];
+    
+    if (gridElementChild.textContent != '') return;
+    GameState.incrementP1MoveCount();
+    const player1Move = GameState.player1.returnPlayerMove();
+    const player2Move = GameState.player2.returnPlayerMove();
+
+    gridElementChild.classList.add('insertMove');
+    gridElementChild.textContent = player1Move;
     const gameArrayIndex = Number(this.id.substring(2, 3)) - 1;
     GameBoard.insertMove(player1Move, gameArrayIndex);
     const gameWonP1 = checkForGameWin(player1Move);
     
     if (gameWonP1) {
-        console.log('Player 1 wins!');
+        insertGameEndMessage('p1Win');
         return;
     }
 
     if (GameState.getP1MoveCount() >= 5) {
-        console.log("It's a draw!");
+        insertGameEndMessage('draw');
         return;
     }
 
     playComputerTurn(player2Move);
     if (checkForGameWin(player2Move)) {
-        console.log('Player 2 wins!');
+        insertGameEndMessage('p2Win');
         return; 
     }
 }
+
+const GameBoard = (() => {
+    const gameArray = [null, null, null, null, null, null, null, null, null];
+    
+    const validIndicies = [0,1,2,3,4,5,6,7,8];
+
+    const getValIndiciesLength = () => {
+        return validIndicies.length;
+    }
+
+    const getValidIndex = (randomIndex) => {
+        return validIndicies[randomIndex];
+    }
+
+    const insertMove = (move, index) => {
+        gameArray[index] = move;
+        const validIndex = validIndicies.indexOf(index);
+        validIndicies.splice(validIndex, 1);
+    }
+
+    const returnPlayerEntry = (index) => {
+        return gameArray[index];
+    }
+
+    const resetGameBoard = () => {
+        for (let i = 0; i < gameArray.length; i++) {
+            gameArray[i] = null;
+            validIndicies[i] = i;
+        }
+    }
+
+    return {insertMove, getValIndiciesLength, getValidIndex, returnPlayerEntry, resetGameBoard};
+})();
 
 const gridElements = document.querySelectorAll('.grid-element');
 gridElements.forEach((gridElement) => {
@@ -140,10 +183,24 @@ gridElements.forEach((gridElement) => {
 const buttons = document.querySelectorAll('.choice-bttn');
 buttons.forEach((button) => {
     button.addEventListener('click', toggleSelectedClass);
+    button.addEventListener('click', restartGame);
 });
 
+const gameEndMessage = document.querySelector('#endGameMessage-container');
+gameEndMessage.addEventListener('click', hidePopUp);
+gameEndMessage.remove();
+
+const body = document.querySelector('body');
+
+document.querySelector('#restart').addEventListener('click', restartGame);
+
+
 const GameState = (() => {
-    player1MoveCount = 0;
+    let player1MoveCount = 0;
+
+    const player1 = Player(getPlayer1Move());
+
+    const player2 = Player(getPlayer2Move(player1.returnPlayerMove()));
 
     const incrementP1MoveCount = () => {
         player1MoveCount++;
@@ -153,8 +210,11 @@ const GameState = (() => {
         return player1MoveCount;
     }
 
-    return {incrementP1MoveCount, getP1MoveCount}
-})();
+    const restartGameState = () => {
+        player1MoveCount = 0;
+        player1.setPlayerMove(getPlayer1Move());
+        player2.setPlayerMove(getPlayer2Move(player1.returnPlayerMove()));
+    }
 
-const player1 = Player(getPlayer1Move());
-const player2 = Player(getPlayer2Move(player1.returnPlayerMove()));
+    return {incrementP1MoveCount, getP1MoveCount, player1, player2, restartGameState};
+})();
