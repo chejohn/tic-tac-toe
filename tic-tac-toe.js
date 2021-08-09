@@ -49,30 +49,30 @@ function playComputerTurn(player2Move) {
 
 function checkForGameWin(playerMove) {
     if (GameState.getP1MoveCount() < 3) return false;
-    
+
     if (GameBoard.returnPlayerEntry(0) === playerMove && GameBoard.returnPlayerEntry(1) === playerMove 
-    && GameBoard.returnPlayerEntry(2) === playerMove) return true;
-    
-    if (GameBoard.returnPlayerEntry(3) === playerMove && GameBoard.returnPlayerEntry(4) === playerMove 
-    && GameBoard.returnPlayerEntry(5) === playerMove) return true;
+        && GameBoard.returnPlayerEntry(2) === playerMove ||
+        
+        GameBoard.returnPlayerEntry(3) === playerMove && GameBoard.returnPlayerEntry(4) === playerMove 
+        && GameBoard.returnPlayerEntry(5) === playerMove ||
+        
+        GameBoard.returnPlayerEntry(6) === playerMove && GameBoard.returnPlayerEntry(7) === playerMove 
+        && GameBoard.returnPlayerEntry(8) === playerMove ||
 
-    if (GameBoard.returnPlayerEntry(6) === playerMove && GameBoard.returnPlayerEntry(7) === playerMove 
-    && GameBoard.returnPlayerEntry(8) === playerMove) return true;
+        GameBoard.returnPlayerEntry(0) === playerMove && GameBoard.returnPlayerEntry(3) === playerMove 
+        && GameBoard.returnPlayerEntry(6) === playerMove ||
 
-    if (GameBoard.returnPlayerEntry(0) === playerMove && GameBoard.returnPlayerEntry(3) === playerMove 
-    && GameBoard.returnPlayerEntry(6) === playerMove) return true;
+        GameBoard.returnPlayerEntry(1) === playerMove && GameBoard.returnPlayerEntry(4) === playerMove 
+        && GameBoard.returnPlayerEntry(7) === playerMove ||
 
-    if (GameBoard.returnPlayerEntry(1) === playerMove && GameBoard.returnPlayerEntry(4) === playerMove 
-    && GameBoard.returnPlayerEntry(7) === playerMove) return true;
+        GameBoard.returnPlayerEntry(2) === playerMove && GameBoard.returnPlayerEntry(5) === playerMove 
+        && GameBoard.returnPlayerEntry(8) === playerMove ||
 
-    if (GameBoard.returnPlayerEntry(2) === playerMove && GameBoard.returnPlayerEntry(5) === playerMove 
-    && GameBoard.returnPlayerEntry(8) === playerMove) return true;
+        GameBoard.returnPlayerEntry(0) === playerMove && GameBoard.returnPlayerEntry(4) === playerMove 
+        && GameBoard.returnPlayerEntry(8) === playerMove ||
 
-    if (GameBoard.returnPlayerEntry(0) === playerMove && GameBoard.returnPlayerEntry(4) === playerMove 
-    && GameBoard.returnPlayerEntry(8) === playerMove) return true;
-
-    if (GameBoard.returnPlayerEntry(2) === playerMove && GameBoard.returnPlayerEntry(4) === playerMove 
-    && GameBoard.returnPlayerEntry(6) === playerMove) return true;
+        GameBoard.returnPlayerEntry(2) === playerMove && GameBoard.returnPlayerEntry(4) === playerMove 
+        && GameBoard.returnPlayerEntry(6) === playerMove) return true;
 
     else return false;
 }
@@ -83,10 +83,12 @@ function insertGameEndMessage(winStatus) {
     const gameWinner = gameEndMessage.childNodes[1].childNodes[3];
 
     if (winStatus === 'p1Win') {
+        gameMessage.textContent = 'The Winner is';
         gameWinner.textContent = GameState.player1.returnPlayerMove();
     }
 
     else if (winStatus === 'p2Win') {
+        gameMessage.textContent = 'The Winner is';
         gameWinner.textContent = GameState.player2.returnPlayerMove();
     }
 
