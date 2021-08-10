@@ -50,7 +50,7 @@ function playComputerTurn(player2Move) {
 }
 
 function winning(playerMove) {
-    if (GameBoard.getValIndiciesLength() >= 8) return false;
+    if (GameBoard.getValIndiciesLength() >= 6) return false;
 
     if (GameBoard.returnPlayerEntry(0) === playerMove && GameBoard.returnPlayerEntry(1) === playerMove 
         && GameBoard.returnPlayerEntry(2) === playerMove ||
