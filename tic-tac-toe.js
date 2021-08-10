@@ -1,4 +1,10 @@
 
+/*
+    Tic-tac-toe: 
+    player1 = human
+    player2 = computer
+*/
+
 const Player = (playerMove) => {
     let move = playerMove;
 
@@ -13,11 +19,7 @@ const Player = (playerMove) => {
 }
 
 function getPlayer1Move() {
-    let playerMoveX = false;
-    buttons[0].classList.forEach((className) => {
-        if (className === 'selected') playerMoveX = true;
-    });
-    if (playerMoveX === true) return 'x';
+    if (buttons[0].classList.length === 2) return 'x';
     else return 'o';
 }
 
@@ -47,8 +49,8 @@ function playComputerTurn(player2Move) {
     }
 }
 
-function checkForGameWin(playerMove) {
-    if (GameState.getP1MoveCount() < 3) return false;
+function winning(playerMove) {
+    if (GameBoard.getValIndiciesLength() >= 8) return false;
 
     if (GameBoard.returnPlayerEntry(0) === playerMove && GameBoard.returnPlayerEntry(1) === playerMove 
         && GameBoard.returnPlayerEntry(2) === playerMove ||
@@ -106,6 +108,9 @@ function restartGame() {
         gridElement.childNodes[1].textContent = "";
         gridElement.childNodes[1].className = '';
     });
+    if (buttons[1].classList.length === 2) {
+        playComputerTurn(GameState.player2.returnPlayerMove());
+    }
 }
 
 function hidePopUp() {
@@ -117,7 +122,6 @@ function game() {
     const gridElementChild = this.childNodes[1];
     
     if (gridElementChild.textContent != '') return;
-    GameState.incrementP1MoveCount();
     const player1Move = GameState.player1.returnPlayerMove();
     const player2Move = GameState.player2.returnPlayerMove();
 
@@ -126,20 +130,24 @@ function game() {
     const gameArrayIndex = Number(this.id.substring(2, 3)) - 1;
     GameBoard.insertMove(player1Move, gameArrayIndex);
     
-    if (checkForGameWin(player1Move)) {
+    if (winning(player1Move)) {
         insertGameEndMessage('p1Win');
-        return;
     }
 
-    if (GameState.getP1MoveCount() >= 5) {
+    else if (GameBoard.getValIndiciesLength() === 0) {
         insertGameEndMessage('draw');
-        return;
     }
 
-    playComputerTurn(player2Move);
-    if (checkForGameWin(player2Move)) {
-        insertGameEndMessage('p2Win');
-        return; 
+    else {
+        playComputerTurn(player2Move);
+        
+        if (winning(player2Move)) {
+            insertGameEndMessage('p2Win');
+        }
+
+        else if (GameBoard.getValIndiciesLength() === 0) {
+            insertGameEndMessage('draw');
+        }
     }
 }
 
@@ -197,25 +205,15 @@ document.querySelector('#restart').addEventListener('click', restartGame);
 
 
 const GameState = (() => {
-    let player1MoveCount = 0;
 
     const player1 = Player(getPlayer1Move());
 
     const player2 = Player(getPlayer2Move(player1.returnPlayerMove()));
 
-    const incrementP1MoveCount = () => {
-        player1MoveCount++;
-    }
-
-    const getP1MoveCount = () => {
-        return player1MoveCount;
-    }
-
     const restartGameState = () => {
-        player1MoveCount = 0;
         player1.setPlayerMove(getPlayer1Move());
         player2.setPlayerMove(getPlayer2Move(player1.returnPlayerMove()));
     }
 
-    return {incrementP1MoveCount, getP1MoveCount, player1, player2, restartGameState};
+    return {player1, player2, restartGameState};
 })();
